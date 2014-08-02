@@ -1,10 +1,8 @@
 package alchemyAPI
 
 import (
-	"fmt"
 	"net/url"
 	"net/http"
-	"os"
 	"io"
 	"io/ioutil"
 	"encoding/json"
@@ -38,9 +36,9 @@ func NewAlchemist(a_apiKey io.Reader) *Alchemist {
 			"html" : "/html/HTMLGetTextSentiment",
 		},
 		"sentiment_targeted" : map[string]string {
-			"url"  : "/url/URLGetTextTargetedSentiment" ,
-			"text" : "/text/TextGetTextTargetedSentiment",
-			"html" : "/html/HTMLGetTextTargetedSentiment",
+			"url"  : "/url/URLGetTargetedSentiment" ,
+			"text" : "/text/TextGetTargetedSentiment",
+			"html" : "/html/HTMLGetTargetedSentiment",
 		},
 		"author" : map[string]string {
 			"url"  : "/url/URLGetAuthor" ,
@@ -75,6 +73,10 @@ func NewAlchemist(a_apiKey io.Reader) *Alchemist {
 			"url"  : "/url/URLGetText" ,
 			"html" : "/html/HTMLGetText",
 		},
+		"text_raw" : map[string]string {
+			"url"  : "/url/URLGetRawText" ,
+			"html" : "/html/HTMLGetRawText",
+		},
 		"title" : map[string]string {
 			"url"  : "/url/URLGetTitle" ,
 			"html" : "/html/HTMLGetTitle",
@@ -89,7 +91,7 @@ func NewAlchemist(a_apiKey io.Reader) *Alchemist {
 		},
 		"combined" : map[string]string {
 			"url"  : "/url/URLGetCombinedData" ,
-			"html" : "/html/HTMLGetCombinedData",
+			"text" : "/text/TextGetCombinedData",
 		},
 		"image" : map[string]string {
 			"url"  : "/url/URLGetText" ,
@@ -226,12 +228,13 @@ showSourceText-> 0: disabled, 1: enabled
 OUTPUT:
 The response, converted from JSON to a map[string] interface{}  
 */
-func (alchemist *Alchemist) TargetedSentiment(flavor string, options url.Values, srcStr string) (map[string] interface{}, error) {
+func (alchemist *Alchemist) TargetedSentiment(flavor string, options url.Values, srcStr string, target string) (map[string] interface{}, error) {
 	_, ok := alchemist.m_callMap["sentiment_targeted"][flavor]
 	if !ok {
 		return nil, errors.New("Invalid Targeted Sentiment type!")
 	}
 	options.Add(flavor, srcStr)
+	options.Add("target", target)
 	return alchemist.analyze(alchemist.m_callMap["sentiment_targeted"][flavor], options, nil)
 }
 /*
@@ -612,17 +615,24 @@ OUTPUT:
 The response, converted from JSON to a map[string] interface{}  
 */
 func (alchemist *Alchemist) ImageTagging(flavor string, options url.Values, imageStr string) (map[string] interface{}, error) {
-	var imageFile io.Reader = nil
+	_, ok := alchemist.m_callMap["imagetagging"][flavor]
+	if !ok {
+		return nil, errors.New("Invalid image extraction type!")
+	}
+	var imageReader io.Reader = nil
+	var imageBytes []byte
 	var err error
 	if "image" == flavor {
-		imageFile, err = os.Open(imageStr)
+		imageBytes, err = ioutil.ReadFile(imageStr)  
 		if nil != err {
 			return nil, err
 		}
+		imageReader = bytes.NewReader(imageBytes)
+		options.Add("imagePostMode", "raw")
 	} else {
 		options.Add(flavor, imageStr)
 	}
-	return  alchemist.analyze(alchemist.m_callMap["imagetagging"][flavor], options, imageFile)
+	return  alchemist.analyze(alchemist.m_callMap["imagetagging"][flavor], options, imageReader)
 }
 
 func (alchemist *Alchemist) analyze(endpoint string, params url.Values, postData io.Reader) (map[string] interface{}, error) {
@@ -632,14 +642,16 @@ func (alchemist *Alchemist) analyze(endpoint string, params url.Values, postData
 	postURL := alchemist.m_baseURL + endpoint + "?" + params.Encode()
 	
 	var resp *http.Response
-	var err error
-	fmt.Println(postURL)
+	var err error = nil
 	if nil != postData {
 		resp, err = http.Post(postURL, "image/jpeg", postData)
 	} else {
 		resp, err = http.Get(postURL)
 	}
-	contents, _ := ioutil.ReadAll(resp.Body)
+	contents, readErr := ioutil.ReadAll(resp.Body)
+	if readErr != nil {
+		return nil, readErr
+	}
 	var jsonMap map[string] interface{}
 	jsonErr := json.Unmarshal(contents, &jsonMap)
 	if jsonErr != nil {

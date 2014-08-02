@@ -1,19 +1,20 @@
 package main
 
 import (
-	"github.com/lineback/alchemyapi_go/alchemyAPI"
-	"net/url"
 	"fmt"
-	"strings"
+	"os"
 )
 
 func main() {
-	alchemist := alchemyAPI.NewAlchemist(strings.NewReader("d5afecb608d4153b6f86e39d987cb59e0ce99b07"))
-
-	resp , _ := alchemist.ImageTagging("url", url.Values{}, "http://demo1.alchemyapi.com/images/vision/emaxfpo.jpg")
-	
-	for _, keyword := range resp["imageKeywords"].([]interface{}){
-		fmt.Println("tag:", keyword.(map[string] interface{})["text"])
-		fmt.Println("score:", keyword.(map[string] interface{})["score"])
+	if 2 != len(os.Args) {
+		fmt.Println("usage:  alchemyInit API_KEY")
+		os.Exit(1)
 	}
+	apiKeyFile, err := os.Create("api_key.txt")
+	defer apiKeyFile.Close()
+	if err != nil {
+	 	fmt.Println(err)
+		os.Exit(1)
+	}
+	apiKeyFile.WriteString(os.Args[1])
 }
