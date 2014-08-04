@@ -94,7 +94,7 @@ func NewAlchemist(a_apiKey io.Reader) *Alchemist {
 			"text" : "/text/TextGetCombinedData",
 		},
 		"image" : map[string]string {
-			"url"  : "/url/URLGetText" ,
+			"url"  : "/url/URLGetImage" ,
 		},
 		"imagetagging" : map[string]string {
 			"url"  : "/url/URLGetRankedImageKeywords" ,
