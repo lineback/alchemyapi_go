@@ -1,4 +1,4 @@
-# alchemyapi_python #
+# alchemyapi_go #
 
 A sdk for AlchemyAPI using Golang
 
