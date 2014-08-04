@@ -20,15 +20,12 @@ To use AlchemyAPI, you'll need to obtain an API key and attach that key to all r
 
 To get started and run the example, simply:
 
-       go get github.com/lineback/alchemyapi_go
-       cd $GOPATH/src/github.com/lineback/alchemyapi_go/alchemyInit/
-       go install
-       cd ../alchemyAPI/
+       go get github.com/lineback/alchemy_go/alchemyAPI
+       go get github.com/lineback/alchemy_go/alchemyInit
+       go get github.com/lineback/alchemy_go/alchemyExamples
+       cd $GOPATH/src/github.com/lineback/alchemy_go/alchemyAPI
        alchemyInit YOUR_API_KEY
        go test 
-       cd ../AlchemyExamples
-       go install 
-       alchemyInit YOUR_API_KEY
        alchemyExamples
 
 
