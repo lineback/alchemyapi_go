@@ -257,7 +257,7 @@ func languageDetectionExample(alchemist *alchemyAPI.Alchemist, demoText string) 
 	fmt.Println("")
 	fmt.Println("## Language ##")
 	fmt.Println("Language:", resp["language"])
-	fmt.Println("iso-693-1:", resp["iso-693-1"])
+	fmt.Println("iso-639-1:", resp["iso-639-1"])
 	fmt.Println("native speakers:", resp["native-speakers"])
 }
 

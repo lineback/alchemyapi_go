@@ -538,6 +538,7 @@ func TestAll(t *testing.T) {
 	test_Text(t, alchemist, testText, testHTML, testURL)
 	test_TextRaw(t, alchemist, testText, testHTML, testURL)
 	test_Author(t, alchemist, testText, testHTML, testURL)
+	test_Language(t, alchemist, testText, testHTML, testURL)
 	test_Title(t, alchemist, testText, testHTML, testURL)
 	test_Relations(t, alchemist, testText, testHTML, testURL)
 	test_Concepts(t, alchemist, testText, testHTML, testURL)
