@@ -1,14 +1,14 @@
 package main
 
 import (
-	"github.com/lineback/alchemyapi_go/alchemyAPI"
-	"net/url"
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"github.com/lineback/alchemyapi_go/alchemyAPI"
+	"io/ioutil"
+	"net/url"
 	"os"
 	"strings"
-	"io/ioutil"
-	"encoding/json"
-	"bytes"
 )
 
 func entitiesExample(alchemist *alchemyAPI.Alchemist, demoText string) {
@@ -17,12 +17,12 @@ func entitiesExample(alchemist *alchemyAPI.Alchemist, demoText string) {
 	fmt.Println("############################################")
 	fmt.Println("#   Entity Extraction Example              #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing text: ", demoText)
 	fmt.Println("")
-	resp, err := alchemist.Entities("text", url.Values{"sentiment":{"1"}}, demoText)
+	resp, err := alchemist.Entities("text", url.Values{"sentiment": {"1"}}, demoText)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -33,12 +33,12 @@ func entitiesExample(alchemist *alchemyAPI.Alchemist, demoText string) {
 	fmt.Println("## Response ##")
 	out.WriteTo(os.Stdout)
 	fmt.Println("")
- 	fmt.Println("## Entitites ##")
-	for _, keyword := range resp["entities"].([]interface{}){
-		fmt.Println("text:", keyword.(map[string] interface{})["text"])
-	 	fmt.Println("type:", keyword.(map[string] interface{})["type"])
-		fmt.Println("relevance:", keyword.(map[string] interface{})["relevance"])
-		fmt.Println("sentiment:", keyword.(map[string] interface{})["sentiment"].(map[string] interface{})["type"])
+	fmt.Println("## Entitites ##")
+	for _, entity := range resp["entities"].([]interface{}) {
+		fmt.Println("text:", entity.(map[string]interface{})["text"])
+		fmt.Println("type:", entity.(map[string]interface{})["type"])
+		fmt.Println("relevance:", entity.(map[string]interface{})["relevance"])
+		fmt.Println("sentiment:", entity.(map[string]interface{})["sentiment"].(map[string]interface{})["type"])
 	}
 }
 
@@ -48,12 +48,12 @@ func keywordsExample(alchemist *alchemyAPI.Alchemist, demoText string) {
 	fmt.Println("############################################")
 	fmt.Println("#   Keywords Extraction Example            #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing text: ", demoText)
 	fmt.Println("")
-	resp, err := alchemist.Keywords("text", url.Values{"sentiment":{"1"}}, demoText)
+	resp, err := alchemist.Keywords("text", url.Values{"sentiment": {"1"}}, demoText)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -65,10 +65,10 @@ func keywordsExample(alchemist *alchemyAPI.Alchemist, demoText string) {
 	out.WriteTo(os.Stdout)
 	fmt.Println("")
 	fmt.Println("## Keywords ##")
-	for _, keyword := range resp["keywords"].([]interface{}){
-		fmt.Println("text:", keyword.(map[string] interface{})["text"])
-		fmt.Println("relevance:", keyword.(map[string] interface{})["relevance"])
-		fmt.Println("sentiment:", keyword.(map[string] interface{})["sentiment"].(map[string] interface{})["type"])
+	for _, keyword := range resp["keywords"].([]interface{}) {
+		fmt.Println("text:", keyword.(map[string]interface{})["text"])
+		fmt.Println("relevance:", keyword.(map[string]interface{})["relevance"])
+		fmt.Println("sentiment:", keyword.(map[string]interface{})["sentiment"].(map[string]interface{})["type"])
 	}
 }
 
@@ -78,7 +78,7 @@ func conceptsExample(alchemist *alchemyAPI.Alchemist, demoText string) {
 	fmt.Println("############################################")
 	fmt.Println("#   Concepts Extraction Example            #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing text: ", demoText)
@@ -95,9 +95,9 @@ func conceptsExample(alchemist *alchemyAPI.Alchemist, demoText string) {
 	out.WriteTo(os.Stdout)
 	fmt.Println("")
 	fmt.Println("## Concepts ##")
-	for _, keyword := range resp["concepts"].([]interface{}){
-		fmt.Println("text:", keyword.(map[string] interface{})["text"])
-		fmt.Println("relevance:", keyword.(map[string] interface{})["relevance"])
+	for _, concept := range resp["concepts"].([]interface{}) {
+		fmt.Println("text:", concept.(map[string]interface{})["text"])
+		fmt.Println("relevance:", concept.(map[string]interface{})["relevance"])
 	}
 }
 
@@ -107,7 +107,7 @@ func sentimentExample(alchemist *alchemyAPI.Alchemist, demoHTML string) {
 	fmt.Println("############################################")
 	fmt.Println("#   Sentiment Example                      #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing HTML: ", demoHTML)
@@ -124,8 +124,8 @@ func sentimentExample(alchemist *alchemyAPI.Alchemist, demoHTML string) {
 	out.WriteTo(os.Stdout)
 	fmt.Println("")
 	fmt.Println("## Document Sentiment ##")
-	fmt.Println("type:", resp["docSentiment"].(map[string] interface{})["type"])
-	fmt.Println("score:", resp["docSentiment"].(map[string] interface{})["score"])
+	fmt.Println("type:", resp["docSentiment"].(map[string]interface{})["type"])
+	fmt.Println("score:", resp["docSentiment"].(map[string]interface{})["score"])
 }
 
 func targetedSentimentExample(alchemist *alchemyAPI.Alchemist, demoText string) {
@@ -134,7 +134,7 @@ func targetedSentimentExample(alchemist *alchemyAPI.Alchemist, demoText string) 
 	fmt.Println("############################################")
 	fmt.Println("#        Targeted Sentiment Example        #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing text: ", demoText)
@@ -151,8 +151,8 @@ func targetedSentimentExample(alchemist *alchemyAPI.Alchemist, demoText string) 
 	out.WriteTo(os.Stdout)
 	fmt.Println("")
 	fmt.Println("## Document Sentiment ##")
-	fmt.Println("type:", resp["docSentiment"].(map[string] interface{})["type"])
-	fmt.Println("score:", resp["docSentiment"].(map[string] interface{})["score"])
+	fmt.Println("type:", resp["docSentiment"].(map[string]interface{})["type"])
+	fmt.Println("score:", resp["docSentiment"].(map[string]interface{})["score"])
 }
 
 func textExtractionExample(alchemist *alchemyAPI.Alchemist, demoURL string) {
@@ -161,7 +161,7 @@ func textExtractionExample(alchemist *alchemyAPI.Alchemist, demoURL string) {
 	fmt.Println("############################################")
 	fmt.Println("#        Text Extraction Example           #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing URL: ", demoURL)
@@ -187,7 +187,7 @@ func authorExtractionExample(alchemist *alchemyAPI.Alchemist, demoURL string) {
 	fmt.Println("############################################")
 	fmt.Println("#      Author Extraction Example           #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing URL: ", demoURL)
@@ -213,7 +213,7 @@ func titleExtractionExample(alchemist *alchemyAPI.Alchemist, demoURL string) {
 	fmt.Println("############################################")
 	fmt.Println("#      Title Extraction Example            #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing URL: ", demoURL)
@@ -239,7 +239,7 @@ func languageDetectionExample(alchemist *alchemyAPI.Alchemist, demoText string) 
 	fmt.Println("############################################")
 	fmt.Println("#      Language Detection Example          #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing text: ", demoText)
@@ -267,7 +267,7 @@ func relationsExample(alchemist *alchemyAPI.Alchemist, demoText string) {
 	fmt.Println("############################################")
 	fmt.Println("#           Relations Example              #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing text: ", demoText)
@@ -284,10 +284,10 @@ func relationsExample(alchemist *alchemyAPI.Alchemist, demoText string) {
 	out.WriteTo(os.Stdout)
 	fmt.Println("")
 	fmt.Println("## Relations ##")
-	for _, relation := range resp["relations"].([]interface{}){
-		fmt.Println("subject:", relation.(map[string] interface{})["subject"].(map [string] interface{})["text"])
-		fmt.Println("action:", relation.(map[string] interface{})["action"].(map [string] interface{})["text"])
-		fmt.Println("object:", relation.(map[string] interface{})["object"].(map [string] interface{})["text"])
+	for _, relation := range resp["relations"].([]interface{}) {
+		fmt.Println("subject:", relation.(map[string]interface{})["subject"].(map[string]interface{})["text"])
+		fmt.Println("action:", relation.(map[string]interface{})["action"].(map[string]interface{})["text"])
+		fmt.Println("object:", relation.(map[string]interface{})["object"].(map[string]interface{})["text"])
 	}
 }
 
@@ -297,7 +297,7 @@ func textCategorizationExample(alchemist *alchemyAPI.Alchemist, demoText string)
 	fmt.Println("############################################")
 	fmt.Println("#      Text Categorization Example         #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing text: ", demoText)
@@ -324,7 +324,7 @@ func feedDetectionExample(alchemist *alchemyAPI.Alchemist, demoURL string) {
 	fmt.Println("############################################")
 	fmt.Println("#           Feeds Example                  #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing url: ", demoURL)
@@ -341,8 +341,8 @@ func feedDetectionExample(alchemist *alchemyAPI.Alchemist, demoURL string) {
 	out.WriteTo(os.Stdout)
 	fmt.Println("")
 	fmt.Println("## Feeds ##")
-	for _, feed := range resp["feeds"].([]interface{}){
-		fmt.Println("feed:", feed.(map[string] interface{})["feed"])
+	for _, feed := range resp["feeds"].([]interface{}) {
+		fmt.Println("feed:", feed.(map[string]interface{})["feed"])
 	}
 }
 
@@ -352,7 +352,7 @@ func microformatsExample(alchemist *alchemyAPI.Alchemist, demoURL string) {
 	fmt.Println("############################################")
 	fmt.Println("#      Microformats Example                #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing url: ", demoURL)
@@ -369,9 +369,9 @@ func microformatsExample(alchemist *alchemyAPI.Alchemist, demoURL string) {
 	out.WriteTo(os.Stdout)
 	fmt.Println("")
 	fmt.Println("## Microformats ##")
-	for _, microformat := range resp["microformats"].([]interface{}){
-		fmt.Println("field:", microformat.(map[string] interface{})["field"])
-		fmt.Println("data:", microformat.(map[string] interface{})["data"])
+	for _, microformat := range resp["microformats"].([]interface{}) {
+		fmt.Println("field:", microformat.(map[string]interface{})["field"])
+		fmt.Println("data:", microformat.(map[string]interface{})["data"])
 	}
 }
 
@@ -381,7 +381,7 @@ func imageExtractionExample(alchemist *alchemyAPI.Alchemist, demoURL string) {
 	fmt.Println("############################################")
 	fmt.Println("#        Image Extraction Example          #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing url: ", demoURL)
@@ -407,7 +407,7 @@ func imageTaggingExample(alchemist *alchemyAPI.Alchemist, imageURL string) {
 	fmt.Println("############################################")
 	fmt.Println("#          Image Tagging Example           #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing url: ", imageURL)
@@ -424,9 +424,9 @@ func imageTaggingExample(alchemist *alchemyAPI.Alchemist, imageURL string) {
 	out.WriteTo(os.Stdout)
 	fmt.Println("")
 	fmt.Println("## Tags ##")
-	for _, tag := range resp["imageKeywords"].([]interface{}){
-		fmt.Println("keyword:", tag.(map[string] interface{})["text"])
-		fmt.Println("score:", tag.(map[string] interface{})["score"])
+	for _, tag := range resp["imageKeywords"].([]interface{}) {
+		fmt.Println("keyword:", tag.(map[string]interface{})["text"])
+		fmt.Println("score:", tag.(map[string]interface{})["score"])
 	}
 }
 
@@ -436,7 +436,7 @@ func taxonomyExample(alchemist *alchemyAPI.Alchemist, demoText string) {
 	fmt.Println("############################################")
 	fmt.Println("#            Taxonomy Example              #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing text: ", demoText)
@@ -453,9 +453,9 @@ func taxonomyExample(alchemist *alchemyAPI.Alchemist, demoText string) {
 	out.WriteTo(os.Stdout)
 	fmt.Println("")
 	fmt.Println("## Categories ##")
-	for _, category := range resp["taxonomy"].([]interface{}){
-		fmt.Println("label:", category.(map[string] interface{})["label"])
-		fmt.Println("score:", category.(map[string] interface{})["score"])
+	for _, category := range resp["taxonomy"].([]interface{}) {
+		fmt.Println("label:", category.(map[string]interface{})["label"])
+		fmt.Println("score:", category.(map[string]interface{})["score"])
 	}
 }
 
@@ -465,7 +465,7 @@ func combinedExample(alchemist *alchemyAPI.Alchemist, demoText string) {
 	fmt.Println("############################################")
 	fmt.Println("#            Combined Example              #")
 	fmt.Println("############################################")
-	fmt.Println("")  
+	fmt.Println("")
 	fmt.Println("")
 
 	fmt.Println("Processing text: ", demoText)
@@ -483,32 +483,31 @@ func combinedExample(alchemist *alchemyAPI.Alchemist, demoText string) {
 
 	fmt.Println("")
 	fmt.Println("## Entitites ##")
-	for _, keyword := range resp["entities"].([]interface{}){
-		fmt.Println("text:", keyword.(map[string] interface{})["text"])
-	 	fmt.Println("type:", keyword.(map[string] interface{})["type"])
-		fmt.Println("relevance:", keyword.(map[string] interface{})["relevance"])
+	for _, entity := range resp["entities"].([]interface{}) {
+		fmt.Println("text:", entity.(map[string]interface{})["text"])
+		fmt.Println("type:", entity.(map[string]interface{})["type"])
+		fmt.Println("relevance:", entity.(map[string]interface{})["relevance"])
 	}
 
 	fmt.Println("")
 	fmt.Println("## Keywords ##")
-	for _, keyword := range resp["keywords"].([]interface{}){
-		fmt.Println("text:", keyword.(map[string] interface{})["text"])
-		fmt.Println("relevance:", keyword.(map[string] interface{})["relevance"])
+	for _, keyword := range resp["keywords"].([]interface{}) {
+		fmt.Println("text:", keyword.(map[string]interface{})["text"])
+		fmt.Println("relevance:", keyword.(map[string]interface{})["relevance"])
 	}
 
 	fmt.Println("")
 	fmt.Println("## Concepts ##")
-	for _, keyword := range resp["concepts"].([]interface{}){
-		fmt.Println("text:", keyword.(map[string] interface{})["text"])
-		fmt.Println("relevance:", keyword.(map[string] interface{})["relevance"])
+	for _, concept := range resp["concepts"].([]interface{}) {
+		fmt.Println("text:", concept.(map[string]interface{})["text"])
+		fmt.Println("relevance:", concept.(map[string]interface{})["relevance"])
 	}
 }
-
 
 func printAscii() {
 	fmt.Println("")
 	fmt.Println("")
-	fmt.Println("            ,                                                                                                                              ") 
+	fmt.Println("            ,                                                                                                                              ")
 	fmt.Println("      .I7777~                                                                                                                              ")
 	fmt.Println("     .I7777777                                                                                                                             ")
 	fmt.Println("   +.  77777777                                                                                                                            ")

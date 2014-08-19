@@ -1,11 +1,11 @@
 package alchemyAPI
 
 import (
-	"testing"
-	"io/ioutil"
-	"strings"
-	"net/url"
 	"fmt"
+	"io/ioutil"
+	"net/url"
+	"strings"
+	"testing"
 )
 
 func test_Entities(t *testing.T, alchemist *Alchemist, testText, testHTML, testURL string) {
@@ -324,7 +324,7 @@ func test_Category(t *testing.T, alchemist *Alchemist, testText, testHTML, testU
 	} else {
 		t.Log("Text Category PASSED")
 	}
-	resp, respErr = alchemist.Category("html", url.Values{"url":{"test"}}, testHTML)
+	resp, respErr = alchemist.Category("html", url.Values{"url": {"test"}}, testHTML)
 	if respErr != nil || resp["status"] != "OK" {
 		t.Error("HTML Category FAILED")
 	} else {
@@ -436,7 +436,7 @@ func test_Taxonomy(t *testing.T, alchemist *Alchemist, testText, testHTML, testU
 	} else {
 		t.Log("Text Taxonomy PASSED")
 	}
-	resp, respErr = alchemist.Taxonomy("html", url.Values{"url":{"test"}}, testHTML)
+	resp, respErr = alchemist.Taxonomy("html", url.Values{"url": {"test"}}, testHTML)
 	if respErr != nil || resp["status"] != "OK" {
 		t.Error("HTML Taxonomy FAILED")
 	} else {
@@ -527,7 +527,7 @@ func TestAll(t *testing.T) {
 	alchemist := NewAlchemist(strings.NewReader(string(keyBytes[:40])))
 	testText := "Bob broke my heart, and then made up this silly sentence to test the Golang SDK"
 	testHTML := "<html><head><span class=\"author\">John</span><title>The best SDK Test | AlchemyAPI</title></head><body><h1>Hello World!</h1><p>My favorite language is Golang</p></body></html>"
-	testURL  :=  "http://www.nytimes.com/2013/07/13/us/politics/a-day-of-friction-notable-even-for-a-fractious-congress.html?_r=0"
+	testURL := "http://www.nytimes.com/2013/07/13/us/politics/a-day-of-friction-notable-even-for-a-fractious-congress.html?_r=0"
 	testImage := "pigeon.jpg"
 
 	test_Entities(t, alchemist, testText, testHTML, testURL)
